@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DashBoard</title>
+    <script src="static/js/socket.io.js"></script>
+    <script src="static/js/jquery.js"></script>
+    <script src="static/js/highcharts.js"></script>
+    <script src="static/js/exporting.js"></script>
+    <script type="text/javascript" charset="utf-8">
+    var socket = io.connect('http://' + document.domain + ':' + location.port);
+    socket.on('connect', function() {
+        socket.emit('test_connect', {data: 'I am connected'});
+    });
+ 
+    socket.on('test_message',function(message){
+        console.log(message);
+        socket.emit('test_data', {data: message});
+
+        var obj = eval(message);
+        var result = obj["data"].split(",");
+        $('#NorthChina').html(result[0]);
+        $('#NorthEast').html(result[1]);
+        $('#EastChina').html(result[2]);
+        $('#MidSouth').html(result[3]);
+        $('#SouthWest').html(result[4]);
+        $('#NorthWest').html(result[5]);
+
+    });
+ 
+    socket.on('connected',function(){
+        console.log('connected');
+    });
+ 
+    socket.on('disconnect', function () {
+        console.log('disconnect');
+    });
+    </script>
+</head>
+<body>
+<div>
+    <b>NorthChina: </b><b id="NorthChina"></b>
+    <b>NorthEast: </b><b id="NorthEast"></b>
+    <b>EastChina: </b><b id="EastChina"></b>
+    <b>MidSouth: </b><b id="MidSouth"></b>
+    <b>SouthWest: </b><b id="SouthWest"></b>
+    <b>NorthWest: </b><b id="NorthWest"></b>
+
+</div>
+<div id="container" style="width: 1440px;height:900px;"></div>
+ 
+<script type="text/javascript">
+    $(document).ready(function () {
+    Highcharts.setOptions({
+        global: {
+            useUTC: false
+        }
+    });
+ 
+    Highcharts.chart('container', {
+        chart: {
+            renderTo: 'container',
+            type: 'bar',
+            marginRight: 10,
+            events: {
+                load: function () {
+ 
+                    // set up the updating of the chart each second
+                    var series = this.series[0];
+
+                    setInterval(function () {
+                        var data = [];
+                        count1 = $('#NorthChina').text();
+                        y1 = parseInt(count1);
+                        data.push(['North China', y1]);
+
+                        count2 = $('#NorthEast').text();
+                        y2 = parseInt(count2);
+                        data.push(['North East', y2]);
+
+                        count3 = $('#EastChina').text();
+                        y3 = parseInt(count3);
+                        data.push(['East China', y3]);
+
+                        count4 = $('#MidSouth').text();
+                        y4 = parseInt(count4);
+                        data.push(['Mid South', y4]);
+
+                        count5 = $('#SouthWest').text();
+                        y5 = parseInt(count5);
+                        data.push(['South West', y5]);
+
+                        count6 = $('#NorthWest').text();
+                        y6 = parseInt(count6);
+                        data.push(['North West', y6]);
+
+                        series.setData(data);
+                    }, 1000);
+                }
+            }
+        },
+        title: {
+            text: 'Real-time Order Dashboard'
+        },
+        xAxis: {
+            categories: ['North China', 'North East', 'East China', 'Mid South', 'South West', 'North West'],
+            style: {
+                fontSize: '15px'
+            }
+        },
+        yAxis: {
+            min: 0,
+            max: 30,
+            tickInterval:2,
+            title: 'Amounts',
+            stackLabels: {
+                enabled: true,
+                style: {
+                    fontWeight: 'bold',
+                    fontSize: '15px',
+                    color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                }
+            }
+            
+        },
+        exporting: {
+            enabled: true
+        },
+        series: [{
+            name: 'amount',
+        }]
+    });
+});
+</script>
+</body>
+</html>
