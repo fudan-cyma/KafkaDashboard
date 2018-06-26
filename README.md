@@ -22,7 +22,7 @@ This is a dashboard example using Kafka and Spark Streaming to aggregate logs an
    ```
 3. Run streaming client,
    ```
-/usr/local/spark/bin/spark-submit --jars /usr/local/spark/jars/spark-streaming-kafka-0-8-assembly_2.11-2.2.1.jar ./scripts/streaming.py 
+	/usr/local/spark/bin/spark-submit --jars /usr/local/spark/jars/spark-streaming-kafka-0-8-assembly_2.11-2.2.1.jar 	./scripts/streaming.py 
    ```
 4. Run the web server,
    ```
